@@ -1,12 +1,11 @@
 const express=require('express')
-
+const cors=require('cors')
 const app = express();
 app.use(express.json()) 
-
+app.use(cors())
 require('dotenv').config()
 
 const expenseRoute = require ('./Routes/expense_route');
-
 app.use('/expense',expenseRoute)
 
 app.listen(process.env.PORT, ()=>{

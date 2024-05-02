@@ -92,31 +92,47 @@ const updateEntry = (req, res) => {
         record.find(x => x.id == req.query.id).amount = entry.amount
         console.log("Updated Entry is", entry)
 
-        if (entry.type == "debit" && entry.isDelete==false) {
-            console.log("Total before-----",total)
-            console.log("oldAmount----",oldAmount)
-            console.log("updatedAmount----",entry.amount)
+        if (entry.type == "debit" && entry.isDelete == false) {
+            console.log("Total before-----", total)
+            console.log("oldAmount----", oldAmount)
+            console.log("updatedAmount----", entry.amount)
+            
+            // total = total + oldAmount - entry.amount
+            let updatedtotal=total + oldAmount - entry.amount
+            {
+                if (updatedtotal <= 0) {
+                    total = updatedtotal
+                    res.send({
+                        isSuccess: false,
+                        message: "Entry Update Unsuccessfully. Insufficient Amount",
+                        Data_Not_Added: entry,
+                        balance: total,
+                    })
+                }
 
-            total = total + oldAmount - entry.amount
+                else {
+                    console.log("Total after-----", updatedtotal)
+                    total = updatedtotal
+                    res.send({
+                        isSuccess: true,
+                        message: "Entry Update Successfully",
+                        Old_amount: oldAmount,
+                        Data_Updated: entry,
+                        balance: total,
+                        fullRecord: record
+                    })
+                }
+            }
 
-            console.log("Total after-----",total)
-            res.send({
-                isSuccess: true,
-                message: "Entry Update Successfully",
-                Old_amount: oldAmount,
-                Data_Updated: entry,
-                balance: total,
-                fullRecord: record
-            })
         }
-        else if(entry.type == "credit" && entry.isDelete==false){
-            console.log("Total before-----",total)
-            console.log("oldAmount----",oldAmount)
-            console.log("updatedAmount----",entry.amount)
+        else if (entry.type == "credit" && entry.isDelete == false) {
+            console.log("Total before-----", total)
+            console.log("oldAmount----", oldAmount)
+            console.log("updatedAmount----", entry.amount)
 
             total = total - oldAmount + entry.amount
 
-            console.log("Total after-----",total)
+            console.log("Total after-----", total)
             res.send({
                 isSuccess: true,
                 message: "Entry Update Successfully",
@@ -126,9 +142,9 @@ const updateEntry = (req, res) => {
                 fullRecord: record
             })
         }
-        else if(entry.type == ("credit" || "debit") && entry.isDelete==true){
+        else if (entry.type == ("credit" || "debit") && entry.isDelete == true) {
             res.send({
-                message:"Entry is deleted"
+                message: "Entry is deleted"
             })
         }
         else {
@@ -140,25 +156,25 @@ const updateEntry = (req, res) => {
     }
 }
 
-const deleteEntry = (req,res)=>{
+const deleteEntry = (req, res) => {
     try {
-        let delete_id=req.query.id;
-        console.log("ID to delete---",delete_id);
+        let delete_id = req.query.id;
+        console.log("ID to delete---", delete_id);
         let delete_index = record.findIndex(x => x.id == delete_id);
-        console.log("Entry to delete index ----",record[delete_index]);
+        console.log("Entry to delete index ----", record[delete_index]);
         record[delete_index].isDelete = true
-        if (record[delete_index].type == "credit"){
+        if (record[delete_index].type == "credit") {
             total = total - record[delete_index].amount
             res.send({
-                fullRecord:record,
-                balance : total
+                fullRecord: record,
+                balance: total
             })
         }
-        else if(record[delete_index].type == "debit"){
+        else if (record[delete_index].type == "debit") {
             total = total + record[delete_index].amount
             res.send({
-                fullRecord:record,
-                balance : total
+                fullRecord: record,
+                balance: total
             })
         }
         else {

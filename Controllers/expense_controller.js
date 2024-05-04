@@ -1,4 +1,6 @@
-let record = []
+// let record = []
+
+// let Record = require("../models/expense_model");
 let total = 0
 
 const newEntry = (req, res) => {
@@ -7,6 +9,7 @@ const newEntry = (req, res) => {
         let newEntry = {}
         newEntry.type = req.body.type
         newEntry.amount = req.body.amount
+        newEntry.description = req.body.description
 
         if (newEntry.type == "credit") {
             req.body.isDelete = false;

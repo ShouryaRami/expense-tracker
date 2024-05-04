@@ -3,6 +3,7 @@ const { newEntry, getRecord, updateEntry, deleteEntry } = require('../Controller
 
 let expenseRoute=express.Router()
 
+
 expenseRoute.post('/newEntry',newEntry)
 expenseRoute.get('/getRecord',getRecord)
 expenseRoute.put('/updateEntry',updateEntry)
